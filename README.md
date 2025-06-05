@@ -120,3 +120,5 @@ Lastly, navigate to the URL and submit the form
 ```
 https://<YOUR_ENDPOINT>.cloudfront.net
 ```
+
+![website demo](./demo_output/static%20website%20demo.png)
