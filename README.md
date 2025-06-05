@@ -13,6 +13,44 @@ The `cdk.json` file tells the CDK Toolkit how to execute your app.
 * `npx cdk diff`    compare deployed stack with current state
 * `npx cdk synth`   emits the synthesized CloudFormation template
 
+### Architecture
+#### 🟦 Client Layer (Top)
+```
+[🧑 User]
+    |
+    ▼
+[🌐 Browser (HTML + JS)]
+```
+
+#### ☁️ Frontend Layer
+```
+[🌩️ Amazon CloudFront (CDN)]
+   | Custom Domain: www.example.com
+   | SSL/TLS via ACM (us-east-1)
+   ▼
+[🪣 Amazon S3 (Static Website Bucket)]
+   | index.html, JS, CSS
+   | OAC (Origin Access Control)
+
+```
+
+#### 🟨 Backend API Layer
+```
+[🌐 API Gateway (REST API)]
+   | POST /register
+   ▼
+[🧠 AWS Lambda (register-student)]
+   | Environment: TABLE_NAME
+   ▼
+[🗃️ DynamoDB (StudentTable)]
+   | Primary Key: email
+```
+
+#### 🔒 Security & Permissions
+CloudFront → S3 via OAC
+Lambda → DynamoDB via IAM role
+API Gateway triggers Lambda
+S3 is private (not public)
 
 ### Commands for development
 
@@ -38,7 +76,15 @@ Only once per account
 
 ```cdk bootstrap```
 
-#### For deployment
+#### Deployment flow
+```
+[💻 Developer Machine]
+|
+├── npx cdk deploy
+├── Code in /lambda and /website
+└── Website deployed via s3deploy.BucketDeployment
+```
+
 ```
 npm run clean && npm run build && cdk deploy
 ```
